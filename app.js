@@ -293,4 +293,43 @@ document.addEventListener('swipedown', function(e) {
   // ...
 });
 
+var touchstartX = 0;
+var touchstartY = 0;
+var touchendX = 0;
+var touchendY = 0;
+
+var gesuredZone = document.body;
+
+gesuredZone.addEventListener('touchstart', function(event) {
+    touchstartX = event.screenX;
+    touchstartY = event.screenY;
+}, false);
+
+gesuredZone.addEventListener('touchend', function(event) {
+    touchendX = event.screenX;
+    touchendY = event.screenY;
+    handleGesure();
+}, false); 
+
+function handleGesure() {
+    //var swiped = 'swiped: ';
+    if (touchendX < touchstartX) {
+        handleDirectionChange(2)
+        //alert(swiped + 'left!');
+    }
+    if (touchendX > touchstartX) {
+        handleDirectionChange(3)
+        //alert(swiped + 'right!');
+    }
+    if (touchendY < touchstartY) {
+        handleDirectionChange(1)
+        //alert(swiped + 'down!');
+    }
+    if (touchendY > touchstartY) {
+      handleDirectionChange(0)
+        //alert(swiped + 'left!');
+    }
+    
+}
+
 
