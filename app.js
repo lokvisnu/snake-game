@@ -141,7 +141,7 @@ function IsDuplicateFoodElement(color,X,Y)
       let y = Math.floor(e.offsetTop/CELL_WIDTH);
       let posCheck = (Math.abs(x - X)<=2||Math.abs(y - Y)<=2);
       let colorCheck = (color === PRIMARY_BG || color === SECONDARY_BG)
-      console.log("x: "+x,"y: "+y,"X: "+X,"Y:"+Y,"E: "+color,"PBG: "+PRIMARY_BG,"SBG: "+SECONDARY_BG,"pos: "+posCheck,"color: "+colorCheck)
+      //console.log("x: "+x,"y: "+y,"X: "+X,"Y:"+Y,"E: "+color,"PBG: "+PRIMARY_BG,"SBG: "+SECONDARY_BG,"pos: "+posCheck,"color: "+colorCheck)
       if(colorCheck)
         flag = 1;
       if(posCheck)
@@ -276,60 +276,46 @@ window.addEventListener('keydown',(e)=>{
         break;
   }
 })
-document.addEventListener('swipeleft', function(e) {
-  // ...
-  handleDirectionChange(2)
-});
-document.addEventListener('swiperight', function(e) {
-  handleDirectionChange(3)
-  // ...
-});
-document.addEventListener('swipeup', function(e) {
-  // ...
-  handleDirectionChange(0)
-});
-document.addEventListener('swipedown', function(e) {
-  handleDirectionChange(1)
-  // ...
-});
+  
+  let swipedir,
+  startX,
+  startY,
+  distX,
+  distY,
+  threshold = 150, 
+  restraint = 100, 
+  allowedTime = 300,
+  elapsedTime,
+  startTime;
 
-var touchstartX = 0;
-var touchstartY = 0;
-var touchendX = 0;
-var touchendY = 0;
+  document.body.addEventListener('touchstart', function(e){
+      var touchobj = e.changedTouches[0]
+      swipedir = 'none'
+      dist = 0
+      startX = touchobj.pageX
+      startY = touchobj.pageY
+      startTime = new Date().getTime() 
+      e.preventDefault()
+  }, false)
 
-var gesuredZone = document.body;
+  document.body.addEventListener('touchmove', function(e){
+      e.preventDefault() 
+  }, false)
 
-gesuredZone.addEventListener('touchstart', function(event) {
-    touchstartX = event.screenX;
-    touchstartY = event.screenY;
-}, false);
-
-gesuredZone.addEventListener('touchend', function(event) {
-    touchendX = event.screenX;
-    touchendY = event.screenY;
-    handleGesure();
-}, false); 
-
-function handleGesure() {
-    //var swiped = 'swiped: ';
-    if (touchendX < touchstartX) {
-        handleDirectionChange(2)
-        //alert(swiped + 'left!');
-    }
-    if (touchendX > touchstartX) {
-        handleDirectionChange(3)
-        //alert(swiped + 'right!');
-    }
-    if (touchendY < touchstartY) {
-        handleDirectionChange(1)
-        //alert(swiped + 'down!');
-    }
-    if (touchendY > touchstartY) {
-      handleDirectionChange(0)
-        //alert(swiped + 'left!');
-    }
-    
-}
+  document.body.addEventListener('touchend', function(e){
+      var touchobj = e.changedTouches[0]
+      distX = touchobj.pageX - startX 
+      distY = touchobj.pageY - startY
+      elapsedTime = new Date().getTime() - startTime
+      if (elapsedTime <= allowedTime){ 
+          if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint){ 
+              swipedir = (distX < 0)? handleDirectionChange(2) :  handleDirectionChange(3) 
+          }
+          else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint){ 
+              swipedir = (distY < 0)?  handleDirectionChange(0): handleDirectionChange(1) 
+          }
+      }
+      e.preventDefault()
+  }, false)
 
 
