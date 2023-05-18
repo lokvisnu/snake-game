@@ -136,9 +136,7 @@ h1 {
   opacity: 100%;
 }
 @media only screen and (max-width: 600px) {
-  body{
-    overflow: hidden;
-  }
+  
   .game-board{
     width:40vh;
     height:40vh;
